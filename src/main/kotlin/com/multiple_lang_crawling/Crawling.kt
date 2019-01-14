@@ -15,17 +15,8 @@ val web = WebClient()
 
 // https://mangashow.me/bbs/page.php?hid=manga_detail&manga_name=예지능력자%20쿠노%20치요
 // https://mangashow.me/bbs/board.php?bo_table=msm_manga&wr_id=326559
-data class UrlType(
-    var url: String,
-    var type: String
-)
 
-data class Page(
-    var title: String,
-    var pageList: MutableList<String>
-) {
-    constructor() : this("", mutableListOf())
-}
+
 
 fun main(args: Array<String>) {
     val getUrlInfo = getUrl()
@@ -33,9 +24,9 @@ fun main(args: Array<String>) {
     if (getUrlInfo.type == "1") {
         getImageList(getUrlInfo.url)
     } else if (getUrlInfo.type == "2") {
-        val page = getPageList(getUrlInfo.url)
-        for (imagePage in page.pageList) {
-            getImageList(imagePage, page.title)
+        val comic = getPageList(getUrlInfo.url)
+        for (imagePage in comic.pageList) {
+            getImageList(imagePage, comic.title)
         }
     }
 }
@@ -53,7 +44,7 @@ fun getUrl(): UrlType {
 }
 
 
-fun getPageList(url: String): Page {
+fun getPageList(url: String): Comic {
     web.options.isThrowExceptionOnScriptError = false
     web.options.isJavaScriptEnabled = true
     web.cookieManager.isCookiesEnabled = false
@@ -64,20 +55,20 @@ fun getPageList(url: String): Page {
     val comicUrlList = "//div[@class='chapter-list']/div[@class='slot ']/a"
 
     val titleList = doc.getByXPath<HtmlDivision>(pageTitle)
-    var comicList = doc.getByXPath<HtmlAnchor>(comicUrlList)
+    val comicList = doc.getByXPath<HtmlAnchor>(comicUrlList)
 
     println(comicList)
 
-    var page = Page()
+    val comic = Comic()
 
-    page.title = "/" + titleList[0].textContent
+    comic.title = "/" + titleList[0].textContent
 
     comicList.reverse()
     for (i in comicList.indices) {
-        page.pageList.add(comicList[i].hrefAttribute)
+        comic.pageList.add(comicList[i].hrefAttribute)
     }
 
-    return page
+    return comic
 }
 
 fun getImageList(url: String, parentPath: String = "/단편") {
