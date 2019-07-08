@@ -12,12 +12,6 @@ import javax.swing.JOptionPane
 val client = OkHttpClient()
 val web = WebClient()
 
-
-// https://mangashow.me/bbs/page.php?hid=manga_detail&manga_name=예지능력자%20쿠노%20치요
-// https://mangashow.me/bbs/board.php?bo_table=msm_manga&wr_id=326559
-
-
-
 fun main(args: Array<String>) {
     val getUrlInfo = getUrl()
 
